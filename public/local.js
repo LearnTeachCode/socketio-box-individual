@@ -11,11 +11,14 @@ var UP = 87, DOWN = 83, LEFT = 65, RIGHT = 68;
 
 // When "new box" event is received, create new box with the received ID
 socket.on('new box', function(boxId) {	
+	console.log("New user connected with id: " + boxId);
 	createBox(boxId);
 });
 
 // When "all previous boxes" event is received, create each box from the received array
 socket.on('all previous boxes', function(boxes) {	
+	console.log("All previous users/boxes:");
+	console.log(boxes);
 	boxes.forEach(function(box){
 		createBox(box.id);
 	});
@@ -23,8 +26,10 @@ socket.on('all previous boxes', function(boxes) {
 
 // Create a new box on the page with the specified ID
 function createBox(boxId) {
+	// Create new element: <p class="box" id="ID GOES HERE"></p>
 	var newBox = document.createElement('p');
 	newBox.id = boxId;
+	newBox.className = 'box';
 
 	// Give the box a random color
 	newBox.style.background = '#' + Math.floor(Math.random()*16777215).toString(16);
