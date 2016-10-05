@@ -50,7 +50,7 @@ function moveAndBroadcast(event) {
 	// If one of our control keys was pressed, move the box and send the code to the server
 	if ( keyCode == UP || keyCode == DOWN || keyCode == LEFT || keyCode == RIGHT ) {
 		// Move the box on the screen accordingly:
-		moveTheBox(keyCode, socket.id);
+		moveTheBox(keyCode, me);
 		// Send the key code to the server, which will then broadcast it to other clients
 		socket.emit( 'individual move', {key: keyCode, id: socket.id} );
 	}
