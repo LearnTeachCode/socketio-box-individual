@@ -21,20 +21,23 @@ var boxes = [];
 io.on('connection', function(socket) {
 
 	// Display this message in the server console
-	console.log('A user connected!');	
+	console.log('A user connected! ID: ' + socket.id.substring(2) );	
 	
-	// Send ID to notify all other users (except the new user)
+	// Send new user's ID to notify all OTHER users
 	// NOTE: substring(2) removes the first two characters from the ID string,
 	// because the server appends two extra meaningless characters for some weird reason.
 	socket.broadcast.emit('new box', socket.id.substring(2) );
 	
-	// Store ID in the boxes array defined on line 18
-	boxes.push(socket.id.substring(2));
 	// Send list of all previously connected users to the new user
 	socket.emit('all previous boxes', boxes);
 	
+	// Store new user's ID in the box array defined on line 18
+	boxes.push(socket.id.substring(2));
+	
 	// When the server receives event named "individual move",
 	socket.on('individual move', function(data) {
+		// Display the received data in the server console
+		console.log(data);
 		// Send the data in a message called "individual move" to every connected client EXCEPT the client who sent this initial "individual move" message
 		socket.broadcast.emit('individual move', data);
 	});
@@ -42,7 +45,7 @@ io.on('connection', function(socket) {
 	// When a user disconnects,
 	socket.on('disconnect', function() {
 		// Display message in server console
-		console.log('A user disconnected!');
+		console.log('A user disconnected! ID: ' + socket.id.substring(2) );
 		
 		// Remove their no-longer-needed box from the array		
 		var indexToRemove = boxes.indexOf( socket.id.substring(2) );	// Get index of the ID to remove
