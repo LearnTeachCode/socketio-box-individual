@@ -16,11 +16,11 @@ socket.on('new box', function(boxId) {
 });
 
 // When "all previous boxes" event is received, create each box from the received array
-socket.on('all previous boxes', function(boxes) {	
+socket.on('all previous boxes', function(boxesArray) {	
 	console.log("All previous users/boxes:");
-	console.log(boxes);
-	boxes.forEach(function(box){
-		createBox(box.id);
+	console.log(boxesArray);
+	boxesArray.forEach(function(boxId){
+		createBox(boxId);
 	});
 });
 
@@ -28,8 +28,8 @@ socket.on('all previous boxes', function(boxes) {
 function createBox(boxId) {
 	// Create new element: <p class="box" id="ID GOES HERE"></p>
 	var newBox = document.createElement('p');
-	newBox.id = boxId;
 	newBox.className = 'box';
+	newBox.id = boxId;
 
 	// Give the box a random color
 	newBox.style.background = '#' + Math.floor(Math.random()*16777215).toString(16);
@@ -58,6 +58,13 @@ function moveAndBroadcast(event) {
 		socket.emit( 'individual move', {key: keyCode, id: socket.id} );
 	}
 }
+
+// When "remove box" event is received, remove the specified box from the page
+socket.on('remove box', function(boxId) {
+	console.log('Removing box with ID: ' + boxId);
+	var box = document.getElementById(boxId);
+	document.body.removeChild(box);
+});
 
 // When "individual move" event is received, move the box using the data received
 socket.on('individual move', function(data){
