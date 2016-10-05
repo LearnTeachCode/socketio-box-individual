@@ -17,9 +17,7 @@ socket.on('new box', function(boxId) {
 // When "all previous boxes" event is received, create each box from the received array
 socket.on('all previous boxes', function(boxes) {	
 	boxes.forEach(function(box){
-		if (box.id !== socket.id) {	// only create boxes whose ID doesn't match THIS user's ID, to prevent duplicates
-			createBox(box.id);
-		}
+		createBox(box.id);
 	});
 });
 
@@ -42,7 +40,7 @@ function createBox(boxId) {
 // Listen for key presses:
 document.addEventListener('keydown', moveAndBroadcast);
 
-// Move the box according to key presses and send the data to the server
+// Move the "me" box according to key presses and send the data to the server
 function moveAndBroadcast(event) {
 	// Normalize key codes across browsers:
 	var keyCode = event.which || event.keyCode || 0;
@@ -50,7 +48,7 @@ function moveAndBroadcast(event) {
 	// If one of our control keys was pressed, move the box and send the code to the server
 	if ( keyCode == UP || keyCode == DOWN || keyCode == LEFT || keyCode == RIGHT ) {
 		// Move the box on the screen accordingly:
-		moveTheBox(keyCode, me);
+		moveTheBox(keyCode, 'me');
 		// Send the key code to the server, which will then broadcast it to other clients
 		socket.emit( 'individual move', {key: keyCode, id: socket.id} );
 	}
