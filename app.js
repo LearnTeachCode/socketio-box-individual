@@ -28,27 +28,13 @@ io.on('connection', function(socket) {
 	// because the server appends two extra meaningless characters for some weird reason.
 	socket.broadcast.emit('new box', socket.id.substring(2) );
 	
-	// Store ID in the box array defined on line 18
+	// Store ID in the boxes array defined on line 18
 	boxes.push(socket.id.substring(2));
 	// Send list of all previously connected users to the new user
 	socket.emit('all previous boxes', boxes);
-
-// 	// When the server receives event named "new box":
-// 	socket.on('new box', function(boxId) {
-// 		// Display in server console
-// 		console.log('new box: ' + boxId);
-// 		// Send boxId to notify all other users (except the new user)
-// 		socket.broadcast.emit('new box', boxId);
-// 		// Store id in the box array defined on line 18
-// 		boxes.push({id: boxId});		
-// 		// Send list of all previously connected users to the new user
-// 		socket.emit('all previous boxes', boxes);
-// 	});	
 	
 	// When the server receives event named "individual move",
 	socket.on('individual move', function(data) {
-		// Display the received data in the server console
-		console.log(data);
 		// Send the data in a message called "individual move" to every connected client EXCEPT the client who sent this initial "individual move" message
 		socket.broadcast.emit('individual move', data);
 	});
