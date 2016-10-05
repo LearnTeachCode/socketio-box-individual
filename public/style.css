@@ -1,0 +1,14 @@
+p {
+	width:10%;
+	height:10%;
+	box-sizing: border-box;
+	background: lightblue;
+	opacity: 0.55;
+	position: absolute;
+}
+
+.me {
+	background: orange;
+	opacity: 1;
+	border: 4px yellow solid;
+}
