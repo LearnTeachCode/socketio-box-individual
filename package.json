@@ -1,7 +1,7 @@
 {
-	"name": "socket-box-shared",
+	"name": "socket-box-individual",
 	"version": "0.1.0",
-	"description": "A sample app for Learn to Code LA, where every client can move the same box around the screen (kind of like in Twitch Plays Pokemon). Built with NodeJS, Express and SocketIO.",
+	"description": "A sample app for Learn to Code LA, where every client has their own box that they can move around the screen while seeing the movements of all the other clients' boxes. Built with NodeJS, Express and SocketIO.",
 	"dependencies": {
 		"express": "^4.10.2",
 		"socket.io": "^1.4.8"
