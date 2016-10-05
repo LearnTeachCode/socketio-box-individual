@@ -9,6 +9,36 @@ var UP = 87, DOWN = 83, LEFT = 65, RIGHT = 68;
 // var UP = 38, DOWN = 40, LEFT = 37, RIGHT = 39;
 // But it doesn't really matter :)
 
+// When "new box" event is received, create new box with the received ID
+socket.on('new box', function(boxId) {	
+	createBox(boxId);
+});
+
+// When "all previous boxes" event is received, create each box from the received array
+socket.on('all previous boxes', function(boxes) {	
+	boxes.forEach(function(box){
+		if (box.id !== socket.id) {	// only create boxes whose ID doesn't match THIS user's ID, to prevent duplicates
+			createBox(box.id);
+		}
+	});
+});
+
+// Create a new box on the page with the specified ID
+function createBox(boxId) {
+	var newBox = document.createElement('p');
+	newBox.id = boxId;
+
+	// Give the box a random color
+	newBox.style.background = '#' + Math.floor(Math.random()*16777215).toString(16);
+
+	// Give the box a random starting position somewhere in the viewport, not too close to being off an edge
+	newBox.style.top = Math.floor(Math.random() * 91) + '%';
+	newBox.style.left = Math.floor(Math.random() * 91) + '%';
+
+	// Add it to the HTML <body> element to actually display the new box
+	document.body.appendChild(newBox);
+}
+
 // Listen for key presses:
 document.addEventListener('keydown', moveAndBroadcast);
 
@@ -20,24 +50,24 @@ function moveAndBroadcast(event) {
 	// If one of our control keys was pressed, move the box and send the code to the server
 	if ( keyCode == UP || keyCode == DOWN || keyCode == LEFT || keyCode == RIGHT ) {
 		// Move the box on the screen accordingly:
-		moveTheBox(keyCode);
+		moveTheBox(keyCode, socket.id);
 		// Send the key code to the server, which will then broadcast it to other clients
-		socket.emit( 'shared move', keyCode );
+		socket.emit( 'individual move', {key: keyCode, id: socket.id} );
 	}
 }
 
-// When "shared move" event is received, move the box using the data received
-socket.on('shared move', function(keyCode){
-	moveTheBox(keyCode);
+// When "individual move" event is received, move the box using the data received
+socket.on('individual move', function(data){
+	moveTheBox(data.key, data.id);
 });
 
 // This function actually MOVES the box on the page as needed using absolute positioning with CSS
-function moveTheBox(keyCode) {
+function moveTheBox(keyCode, boxId) {
 
 	var SCREENWIDTH = 100, SCREENHEIGHT = 100, BOXSIZE = 10, STEPSIZE = 1.5, direction = 1, newPositionValue = 0;
 
-	// Create a variable for the HTML element with the id="movebox"
-	var box = document.getElementById('movebox');
+	// Create a variable for the HTML element with the id of the specified box/user
+	var box = document.getElementById(boxId);
 
 	// The below code is a bit tricky because it's doing a little math
 	// to make the box wrap around if it goes off the edge of the screen.
